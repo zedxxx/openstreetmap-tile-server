@@ -131,9 +131,9 @@ if [ "$1" == "import" ]; then
     sudo -u postgres psql -d gis -f /data/style/functions.sql
 
     #Import external data
-    chown -R renderer: /home/renderer/src/ /data/style/
+    chown -R renderer: /home/renderer/src/ /data/style/ /data/cache/
     if [ -f /data/style/scripts/get-external-data.py ] && [ -f /data/style/external-data.yml ]; then
-        sudo -E -u renderer python3 /data/style/scripts/get-external-data.py -c /data/style/external-data.yml -D /data/style/data
+        sudo -E -u renderer python3 /data/style/scripts/get-external-data.py -c /data/style/external-data.yml -D /data/cache ${EXTERNAL_DATA_EXTRA_ARGS:-}
     fi
 
     # Register that data has changed for mod_tile caching purposes
