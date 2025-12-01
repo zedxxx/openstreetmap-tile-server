@@ -37,6 +37,12 @@ fi
 
 set -x
 
+if [ "$1" == "run-pg" ]; then
+    echo "Starting PostgreSQL server..."
+    createPostgresConfig
+    exec sudo -u postgres /usr/lib/postgresql/$PG_VERSION/bin/postgres -D /data/database/postgres/
+fi
+
 # if there is no custom style mounted, then use osm-carto
 if [ ! "$(ls -A /data/style/)" ]; then
     mv /home/renderer/src/openstreetmap-carto-backup/* /data/style/
