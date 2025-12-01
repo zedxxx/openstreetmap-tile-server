@@ -231,7 +231,7 @@ if [ "$1" == "run" ]; then
     child=$!
     wait "$child"
 
-    service postgresql stop
+    stopPostgres
 
     exit 0
 fi
