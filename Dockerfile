@@ -59,6 +59,8 @@ RUN apt-get update \
  cron \
  dateutils \
  fonts-hanazono \
+ fonts-noto-core \
+ fonts-noto-extra \
  fonts-noto-cjk \
  fonts-noto-hinted \
  fonts-noto-unhinted \
@@ -94,6 +96,9 @@ RUN adduser --disabled-password --gecos "" renderer
 
 # Get Noto Emoji Regular font, despite it being deprecated by Google
 RUN wget https://github.com/googlefonts/noto-emoji/blob/9a5261d871451f9b5183c93483cbd68ed916b1e9/fonts/NotoEmoji-Regular.ttf?raw=true --content-disposition -P /usr/share/fonts/
+
+# Get Noto Emoji Bold font: https://fonts.google.com/noto/specimen/Noto+Emoji
+RUN wget https://fonts.gstatic.com/s/notoemoji/v62/bMrnmSyK7YY-MEu6aWjPDs-ar6uWaGWuob9M1TwvS-FGJCMY.ttf -O "/usr/share/fonts/NotoEmoji-Bold.ttf"
 
 # For some reason this one is missing in the default packages
 RUN wget https://github.com/stamen/terrain-classic/blob/master/fonts/unifont-Medium.ttf?raw=true --content-disposition -P /usr/share/fonts/
