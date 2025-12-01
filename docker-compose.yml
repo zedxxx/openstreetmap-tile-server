@@ -1,10 +1,9 @@
 services:
   osm:
-    #image: zed43/osm-tile-server:latest
-    #image: ghcr.io/zedxxx/osm-tile-server:latest
+    image: zed43/osm-tile-server:latest
     
-    build: .
-    image: osm:latest
+    #build: .
+    #image: osm-tile-server:latest
     
     container_name: osm
     
