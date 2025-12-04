@@ -5,9 +5,33 @@ set -euox pipefail
 WORK_DIR=/osm
 DATA_DIR=/mnt/data
 
+function usage() {
+    cat << EOF
+Usage: $0 <command> [options]
+
+Commands:
+  up                Create and run container with OSM Tile Server
+  down              Stop and delete OSM Tile Server container
+  import [region]   Import OSM data (optionally download region first)
+  get <region>      Download region data (examples: europe/belarus, russia/kaliningrad, russia)
+  logs              Show OSM Tile Server logs (follow mode)
+  pg <subcommand>   Manage PostgreSQL in the OSM Tile Server container:
+                      run          Create and run container with PostgreSQL server
+                      analyze      Run ANALYZE
+                      vacuum       Run VACUUM
+                      vacuum-full  Run VACUUM FULL
+                      convert      Execute convert-names.sql
+EOF
+}
+
+if [ "$#" -eq 0 ]; then
+    usage
+    exit 1
+fi
+
 if [ "$1" == "up" ]; then
     cd "${WORK_DIR}"
-    docker compose up --detach --pull missing
+    docker compose up --detach
     exit 0
 fi
 
@@ -30,7 +54,7 @@ function download_region() {
 
 if [ "$1" == "import" ]; then
     
-    if [ -n "$2" ]; then
+    if [ -n "${2:-}" ]; then
         download_region "$2"
     fi
 
@@ -41,22 +65,25 @@ if [ "$1" == "import" ]; then
     rm -rf "${DATA_DIR}/database"
     rm -rf "${DATA_DIR}/tiles"
 
-    docker compose run --rm --name osm-import osm import
+    time docker compose run --rm --name osm-import osm import
+
+    exit 0
 fi
 
 if [ "$1" == "get" ]; then
     cd "${WORK_DIR}"
-    if [ -n "$2" ]; then
+    if [ -n "${2:-}" ]; then
         download_region "$2"
+        exit 0
     else
         echo "Provide region name! Examples: europe/belarus, russia/kaliningrad, russia"
+        exit 1
     fi
 fi
 
 if [ "$1" == "logs" ]; then
     cd "${WORK_DIR}"
-    docker compose logs --follow
-    exit 0
+    exec docker compose logs --follow
 fi
 
 # PostgreSQL
@@ -71,12 +98,12 @@ function pg_check_running() {
 
 function pg_run_psql() {
     local sql="$1"
-    docker exec -it "${PG_CONTAINER_NAME}" psql -h localhost -U "${PG_USER}" -d "${PG_DB}" -c "${sql}"
+    time docker exec -it "${PG_CONTAINER_NAME}" psql -h localhost -U "${PG_USER}" -d "${PG_DB}" -c "${sql}"
 }
 
 function pg_run_convert() {
     docker cp ./convert-names.sql "${PG_CONTAINER_NAME}":/convert.sql
-    docker exec -it "${PG_CONTAINER_NAME}" psql -h localhost -U "${PG_USER}" -d "${PG_DB}" -f /convert.sql
+    time docker exec -it "${PG_CONTAINER_NAME}" psql -h localhost -U "${PG_USER}" -d "${PG_DB}" -f /convert.sql
 }
 
 function pg_error_not_running() {
@@ -89,7 +116,7 @@ if [ "$1" == "pg" ]; then
     
     cd "${WORK_DIR}"
 
-    case "$2" in
+    case "${2:-}" in
     "run")
         docker compose run --rm --name "${PG_CONTAINER_NAME}" osm run-pg
         exit 0
@@ -132,7 +159,7 @@ if [ "$1" == "pg" ]; then
         ;;
     
     *)
-        echo "Usage: $0 pg {run|convert|vacuum|vacuum-full|analyze}"
+        echo "Usage: $0 pg <run|analyze|vacuum|vacuum-full|convert>"
         exit 1
         ;;
     esac

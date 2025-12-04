@@ -32,6 +32,8 @@ netstat -npl
 # Docker https://wiki.alpinelinux.org/wiki/Docker
 apk add docker docker-compose
 
+mkdir --parents /etc/docker
+
 cat > /etc/docker/daemon.json << EOF 
 {
     "data-root": "/mnt/data/docker"
@@ -44,13 +46,13 @@ rc-update add docker
 docker info
 
 # Disable autostart not-necessary services
-rc-update del ntpd
-rc-update del sshd
-rc-update del vsftpd
+rc-update del ntpd || true
+rc-update del sshd || true
+rc-update del vsftpd || true
 
 # Setup tools script
-chmod a+x ./osm-tools.sh
-ln -sfTv ./osm-tools.sh /usr/local/bin/osm
+chmod a+x /osm/osm-tools.sh
+ln -sfTv /osm/osm-tools.sh /usr/local/bin/osm
 
 # Clean up
 apk cache clean

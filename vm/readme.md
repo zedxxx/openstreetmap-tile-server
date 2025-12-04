@@ -43,4 +43,4 @@ EOL
 ```
 
 3. Run `fetch` script: `chmod +x ./fetch.sh && ./fetch.sh`
-4. Run `alpine-setup` script: `cd /osm/vm && ./alpine-setup.sh`
+4. Run `alpine-setup` script: `/osm/vm/alpine-setup.sh` 

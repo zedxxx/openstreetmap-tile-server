@@ -1,6 +1,5 @@
 services:
   osm:
-    build: ./image
     image: zed43/osm-tile-server:latest
     
     container_name: osm
