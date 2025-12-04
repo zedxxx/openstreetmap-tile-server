@@ -51,8 +51,8 @@ rc-update del sshd || true
 rc-update del vsftpd || true
 
 # Setup tools script
-chmod a+x /osm/osm-tools.sh
-ln -sfTv /osm/osm-tools.sh /usr/local/bin/osm
+chmod a+x /osm/tools/osm-tools.sh
+ln -sfTv /osm/tools/osm-tools.sh /usr/local/bin/osm
 
 # Clean up
 apk cache clean

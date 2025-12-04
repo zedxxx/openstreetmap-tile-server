@@ -2,7 +2,8 @@
 
 set -euox pipefail
 
-WORK_DIR=/osm
+COMPOSE_DIR=/osm
+TOOLS_DIR=/osm/tools
 DATA_DIR=/mnt/data
 
 function usage() {
@@ -31,13 +32,13 @@ if [ "$#" -eq 0 ]; then
 fi
 
 if [ "$1" == "up" ]; then
-    cd "${WORK_DIR}"
+    cd "${COMPOSE_DIR}"
     docker compose up --detach
     exit 0
 fi
 
 if [ "$1" == "down" ]; then
-    cd "${WORK_DIR}"
+    cd "${COMPOSE_DIR}"
     docker compose down
     exit 0
 fi
@@ -59,7 +60,7 @@ if [ "$1" == "import" ]; then
         download_region "$2"
     fi
 
-    cd "${WORK_DIR}"
+    cd "${COMPOSE_DIR}"
 
     docker compose down
    
@@ -72,7 +73,6 @@ if [ "$1" == "import" ]; then
 fi
 
 if [ "$1" == "get" ]; then
-    cd "${WORK_DIR}"
     if [ -n "${2:-}" ]; then
         download_region "$2"
         exit 0
@@ -83,7 +83,7 @@ if [ "$1" == "get" ]; then
 fi
 
 if [ "$1" == "logs" ]; then
-    cd "${WORK_DIR}"
+    cd "${COMPOSE_DIR}"
     exec docker compose logs --follow
 fi
 
@@ -93,12 +93,11 @@ function run_render_list_geo() {
     z=$((z-1))
     Z=$((Z-1))
     local render_geo=render-list-geo.pl
-    docker cp "./${render_geo}" "osm:/${render_geo}"
-    time docker exec -it osm "${render_geo}" -x "$x" -y "$y" -X "$X" -Y "$Y" -z "$z" -Z "$Z"
+    docker cp "${TOOLS_DIR}/${render_geo}" "osm:/${render_geo}"
+    time docker exec -it osm "/${render_geo}" -x "$x" -y "$y" -X "$X" -Y "$Y" -z "$z" -Z "$Z"
 }
 
 if [ "$1" == "render" ]; then
-    cd "${WORK_DIR}"
     run_render_list_geo "$2"
     exit 0
 fi
@@ -119,7 +118,7 @@ function pg_run_psql() {
 }
 
 function pg_run_convert() {
-    docker cp ./convert-names.sql "${PG_CONTAINER_NAME}:/convert.sql"
+    docker cp "${TOOLS_DIR}/convert-names.sql" "${PG_CONTAINER_NAME}:/convert.sql"
     time docker exec -it "${PG_CONTAINER_NAME}" psql -h localhost -U "${PG_USER}" -d "${PG_DB}" -f /convert.sql
 }
 
@@ -130,11 +129,10 @@ function pg_error_not_running() {
 }
 
 if [ "$1" == "pg" ]; then
-    
-    cd "${WORK_DIR}"
 
     case "${2:-}" in
     "run")
+        cd "${COMPOSE_DIR}"
         docker compose run --rm --name "${PG_CONTAINER_NAME}" osm run-pg
         exit 0
         ;;
