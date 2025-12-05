@@ -2,6 +2,9 @@
 
 set -euox pipefail
 
+osm_dir=/osm
+data_dir=/mnt/data
+
 # Base tools
 apk add bash make mc nano htop
 
@@ -36,7 +39,7 @@ mkdir --parents /etc/docker
 
 cat > /etc/docker/daemon.json << EOF
 {
-    "data-root": "/mnt/data/docker"
+    "data-root": "${data_dir}/docker"
 }
 EOF
 
@@ -51,9 +54,14 @@ rc-update del vsftpd || true
 rc-update del loadkmap boot || true
 
 # Setup tools script
-chmod a+x /osm/tools/render-list-geo.pl
-chmod a+x /osm/tools/osm-tools.sh
-ln -sfTv /osm/tools/osm-tools.sh /usr/local/bin/osm
+chmod a+x "${osm_dir}/tools/render-list-geo.pl"
+chmod a+x "${osm_dir}/tools/osm-tools.sh"
+ln -sfTv "${osm_dir}/tools/osm-tools.sh" /usr/local/bin/osm
+
+# External data (empty)
+unzip -o "${osm_dir}/vm/external-data-empty.zip" -d "${data_dir}"
+rm -rfv "${data_dir}/cache-empty"
+mv -fv "${data_dir}/external-data-empty" "${data_dir}/cache-empty"
 
 # Clean up
 apk cache clean
