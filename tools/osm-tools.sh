@@ -22,7 +22,6 @@ Commands:
                       stop         Stop running container with PostgreSQL server
                       analyze      Run ANALYZE
                       vacuum       Run VACUUM
-                      vacuum-full  Run VACUUM FULL
                       convert      Execute convert-names.sql
 EOF
 }
@@ -164,15 +163,6 @@ if [ "$1" == "pg" ]; then
         fi
         ;;
     
-    "vacuum-full")
-        if pg_check_running; then
-            pg_run_psql "VACUUM FULL;"
-            exit 0
-        else
-            pg_error_not_running
-        fi
-        ;;
-    
     "convert")
         if pg_check_running; then
             pg_run_convert            
@@ -183,7 +173,7 @@ if [ "$1" == "pg" ]; then
         ;;
     
     *)
-        echo "Usage: $0 pg <run|stop|analyze|vacuum|vacuum-full|convert>"
+        echo "Usage: $0 pg <run|stop|analyze|vacuum|convert>"
         exit 1
         ;;
     esac
