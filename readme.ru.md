@@ -1,7 +1,9 @@
+Read this in other language: [English](readme.md)
+
 ## Быстрый старт
 
 1. Установите [VMware Workstation Pro](https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion) или [VirtualBox](https://www.virtualbox.org/)
-2. Скачайте настроенную виртуальную машину [osm-tile-server-vm.zip]()
+2. Скачайте настроенную виртуальную машину [osm-tile-server-vm.zip](https://github.com/zedxxx/osm-tile-server/releases/latest/)
 3. Распакуйте её на диск достаточной ёмкости, желательно на SSD
 4. Запустите VMware/VirtualBox, откройте распакованную виртуальную машину и включите её
 5. После окончания загрузки, войдите в систему под логином *root*, с паролем *alpine*
@@ -13,18 +15,19 @@
 
 Примечания:
 
+- Если вы используете VirtualBox, перед первым запуском виртуальной машины необходимо добавить два жёстких диска в следующем порядке: сначала `system.vmdk`, затем `data.vmdk`. Также убедитесь, что настройки сети корректны
 - IP адрес машины можно узнать командой `ifconfig eth0`
 - При первом импорте региона, из интернета будет скачано около 2 Гб данных (docker образ, latest.osm.pbf региона, external data с границами стран и морей). При повторных импортах загружаться будет только файл региона. При запуске команды импорта без указания имени региона (`osm import`), будет выполнен импорт кэшированных данных, без предварительной загрузки. Если границы стран и морей не интересуют, то в `docker-compose.yml` исправьте `/mnt/data/cache` на `/mnt/data/cache-empty` - сэкономите несколько минут при импорте
 - Регионы загружаются с [download.geofabrik.de](https://download.geofabrik.de/). Точное имя региона можно узнать из URL интересующего вас региона
 - Импортировать можно только один регион, каждый повторный импорт удаляет результаты предыдущего 
-- При необходимости импорта двух и более регионов, их необходимо объединить в один. Используйте для этого утилиту [osmium](https://osmcode.org/osmium-tool/) (версия для win64 [тут]()). Объединённый файл нужно скопировать в `/mnt/data/region.osm.pbf` (файл `region.poly` с границами региона не обязателен)
-- Для доступа к виртуальной машине по SSH используйте [PuTTY](https://putty.org.ru/), по FTP и SFTP - [WinSCP](https://winscp.net/eng/downloads.php). Портативный комплект "всё-в-одном" можно взять [тут]().
+- При необходимости импорта двух и более регионов, их необходимо объединить в один. Используйте для этого утилиту [osmium](https://osmcode.org/osmium-tool/) (версия для win64 [тут](https://github.com/zedxxx/osm-tile-server/releases/download/v251206/osmium-win64.zip)). Объединённый файл нужно скопировать в `/mnt/data/region.osm.pbf` (файл `region.poly` с границами региона не обязателен)
+- Для доступа к виртуальной машине по SSH используйте [PuTTY](https://putty.org.ru/), по FTP и SFTP - [WinSCP](https://winscp.net/eng/downloads.php). Портативный комплект "всё-в-одном" можно взять [тут](https://github.com/zedxxx/osm-tile-server/releases/download/v251206/winscp-win64.zip).
 
 ## Дополнительная информация
 
 Структура репозитория:
 
 - `image` - скрипты и Docker файл для сборки docker образа. Готовый образ находится на [DockerHub](https://hub.docker.com/r/zed43/osm-tile-server)
-- `tools` - скрипты, облегчающие взаимодействие с OSM сервером. Доступные команды описаны в [tools/readme.ru.md]()
+- `tools` - скрипты, облегчающие взаимодействие с OSM сервером. Доступные команды описаны в [tools/readme.ru.md](https://github.com/zedxxx/osm-tile-server/tools/readme.ru.md)
 - `vm` - скрипт и инструкция настройки виртуальной машины "с нуля"
 - `docker-compose.yml` - настройки для создания и запуска docker контейнера

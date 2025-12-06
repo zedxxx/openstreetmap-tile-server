@@ -98,7 +98,7 @@ Your tiles will now be available at `http://localhost:8080/tile/{z}/{x}/{y}.png`
 
 ### Using Docker Compose
 
-The `docker-compose.yml` file included with this repository shows how the aforementioned command can be used with Docker Compose to run your server.
+The [`docker-compose.yml`](https://github.com/zedxxx/osm-tile-server/docker-compose.yml) file included with this repository shows how the aforementioned command can be used with Docker Compose to run your server.
 
 ### Preserving rendered tiles
 

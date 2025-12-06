@@ -5,7 +5,7 @@
 3. Hardware:
    1. CPU: 8 cores (4 processors with 2 cores per processor), Enable all 3 options under Virtualization Engine
    2. RAM: 16 GB
-   3. HDD: 1 GB (system)
+   3. HDD: 4 GB (system)
    4. Network: Bridged
 4. Edit VM settings:
    1. Add second HDD: 1000 GB (data)

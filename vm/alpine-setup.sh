@@ -66,4 +66,4 @@ mv -fv "${data_dir}/external-data-empty" "${data_dir}/cache-empty"
 
 # Clean up
 apk cache clean
-rm -rfv /var/logs/*
+rm -rfv /var/log/*
