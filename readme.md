@@ -10,7 +10,7 @@ Read this in other language: [Русский](readme.ru.md)
 5. After boot completes, log in as *root* with password *alpine*
 6. Import a small test region (Europe, Luxembourg) using command `osm import europe/luxembourg`
 7. After import completes, start the server: `osm up`
-8. Open browser at `http://<your-vm-ip-address>/`
+8. Open browser at `http://<your-vm-ip-address>/#10/49.8163/6.1331`
 9. Verify that the map displays properly
 10. Import your desired region: `osm import <your-region-name>`
 
